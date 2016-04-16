@@ -1,0 +1,10 @@
+clc;
+close all;
+clear;
+
+[X,Y] = libsvmread('ncrna_train.txt');
+svmTrainedData = svmtrain(X,Y);
+[X1,Y1] = libsvmread('ncrna_test);
+[predicted_label, accuracy, prob_estimates] = svmpredict(X,Y,svmTrainedData);
+
+fprintf('\nTraining Set Accuracy: %f\n', mean(double(predicted_label==X)) * 100);
