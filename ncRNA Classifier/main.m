@@ -3,11 +3,24 @@ close all;
 clear;
 
 [X,Y] = libsvmread('ncrna_train.txt');
+%%%%%%%%%% Cost vs Accuracy using cross validation sets %%%%%%%%%%%
+ntrainingPoints = 0.6*size(X,1);
+nvalidationPoints = size(X,1) - ntrainingPoints;
+
+Xtrain = X(1:ntrainingPoints);
+Xvalidate = X(ntrainingPoints+1:end);
+
+Ytrain = Y(1:ntrainingPoints,:);
+Yvalidate = Y(ntrainingPoints+1:end,:);
+
+plotAccuracyvsCost(Xtrain,Ytrain,Xvalidate,Yvalidate,ntrainingPoints,nvalidationPoints);
+
+%%%%%%%%%% Testing on given test data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [X1,Y1] = libsvmread('ncrna_test.txt');
 
+svmTrainedData = svmtrain(X,Y,'-s 0 -t 0 -c 10 -h 0');
+[predicted_labelsFromTraining] = svmpredict(X,Y,svmTrainedData);
+[predicted_labelsFromTesting] = svmpredict(X1,Y1,svmTrainedData);
 
-svmTrainedData = svmtrain(X,Y);
-[predicted_label, accuracy, prob_estimates] = svmpredict(X1,Y1,svmTrainedData);
-
-
-%fprintf('\nTraining Set Accuracy: %f\n', mean(double(predicted_label==X)) * 100);
+libsvmwrite('ncrna_test.txt',predicted_labelsFromTesting,Y1);
+fprintf('\nTraining Set Accuracy: %f\n', mean(double(predicted_labelsFromTraining==X)) * 100);
