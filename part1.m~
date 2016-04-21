@@ -79,13 +79,5 @@ plotMat = zeros(1000,1);
      
  plot(plotMat);    
      
-%  Xcomp = zeros(100,1);
-%  Ycomp = zeros(100,1);
-%  for i = 2:101
-%     X(i-1) = (str2double(inputs{1}{i}) - xavg)/xstd;
-%     Y(i-1) = (str2double(inputs{2}{i}) - yavg)/ystd;
-%  end
-%  
-% 
-%  pxcomp = calcPolynomial(Xcomp, a);
-%  totalcost = calcCost(pxcomp, Ycomp)
+ Xcomp = 
+ 
