@@ -8,84 +8,81 @@ for i = 2:21
     X(i-1) = str2double(inputs{1}{5*i - 5});
     Y(i-1) = str2double(inputs{2}{5*i - 5});
 end
+% for i = 2:101
+%     X(i-1) = str2double(inputs{1}{i});
+%     Y(i-1) = str2double(inputs{2}{i});
+% end
+
+
 xavg = sum(X)/20;
 yavg = sum(Y)/20;
 xstd = std(X);
 ystd = std(Y);
-for i = 1:20
-    X(i) = (X(i) - xavg)/xstd;
-    Y(i) = (Y(i) - yavg)/ystd;
+for i = 1:length(X)
+    X(i) = (X(i))/xstd;
+    Y(i) = (Y(i))/ystd;
 end
- X
- Y
  
- polyfit(X,Y,9)
+% polyfit(X,Y,9)
 
-learnRate = 5*1.0e-6;
+learnRate = 1.0e-6;
+lambda = 0;
 
-%assuming second order polynomial
-
-% sum = 0.0;
-% x = X;
-% a = rand(3,1);
-% size = size(a);
-% n = size(1);
-% sum = sum + 20*a(1);
-% for i = 2:n
-%     sum = sum + sum(a(i)*x);
-%     x = x.*X;
-% end
-% 
-% order1error = loss1(X,Y);
-
-% a = rand(3,1);
-% Xsqr = X.*X;
-% ones = ones(20,1);
-% sum = zeros(20,1);
-% for i = 1:20
-%     sum(i) = a(1) + a(2)*X(i) + a(3)*Xsqr(i);
-% end
-% 
-
-
-
-a = zeros(9,1);
+a = zeros(10,1);
 % for i = 1:9
 %     a(i) = 5;
 % end
 
 plotMat = zeros(1000,1);
- for i = 1:100000
+ for i = 1:10000
      px = calcPolynomial(X,a);
-     cost = calcCost(px, Y);
+     cost = calcCost(a, px, Y, lambda);
      cost
      c = sum(cost);
-     if i>99000
-        plotMat(i-99000) = c;
-     end
-     
+%      if i>99000
+%         plotMat(i-9000) = c;
+%      end
+%      
      disp('current cost is');
      disp(c);
      disp('iteration number is');
      disp(i);
-     grad = calcGrad(a, X, Y, px)
+     grad = calcGrad(a, X, Y, px, lambda)
      for j = 1:length(a)
          a(j) = a(j) - learnRate*grad(j);
      end
-     a
+     
     % k = waitforbuttonpress;
+ end   
+     
+%  plot(plotMat); 
+ for i = 1:length(a)
+      a(i) = a(i)*ystd/(xstd^i);
  end
-     
-     
- plot(plotMat);    
+%   a
+
+
+%NOISE VARIANCE
+disp ('noise variance is ');
+var(cost)
+
+% Xtest = zeros(20,1);
+% Ytest = zeros(20,1);
+% for i = 1:20
+%     Xtest(i) = str2double(inputs{1}{5*i - 2})/xstd;
+%     Ytest(i) = str2double(inputs{2}{5*i - 2})/ystd;
+% end
+% 
+% pxtest = calcPolynomial (Xtest,a);
+% testcost = sum(calcCost(a, pxtest, Ytest, lambda))
      
 %  Xcomp = zeros(100,1);
 %  Ycomp = zeros(100,1);
 %  for i = 2:101
-%     X(i-1) = (str2double(inputs{1}{i}) - xavg)/xstd;
-%     Y(i-1) = (str2double(inputs{2}{i}) - yavg)/ystd;
+%     X(i-1) = (str2double(inputs{1}{i}))/xstd;
+%     Y(i-1) = (str2double(inputs{2}{i}))/ystd;
 %  end
 %  
 % 
 %  pxcomp = calcPolynomial(Xcomp, a);
-%  totalcost = calcCost(pxcomp, Ycomp)
+%  totalcost = calcCost(a, pxcomp, Ycomp, lambda)
